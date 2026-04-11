@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR WhatsApp</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      background: #f7f7f7;
+      color: #111;
+    }
+    h1 {
+      margin-bottom: 16px;
+    }
+    #qr {
+      max-width: 320px;
+      width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      padding: 12px;
+      background: #fff;
+    }
+    #status {
+      margin-top: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Escanea el QR</h1>
+  <img id="qr" alt="QR de WhatsApp" />
+  <div id="status">Esperando QR...</div>
+
+ <script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io()
+
+socket.on('qr', (img) => {
+  document.getElementById('qr').src = img
+})
+
+socket.on('status', (s) => {
+  document.getElementById('status').innerText = s
+})
+</script>
+</body>
+</html>
+
