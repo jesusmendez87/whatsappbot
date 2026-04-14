@@ -3,54 +3,108 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR WhatsApp</title>
+  <title>WhatsApp Multi-Sesión</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-      background: #f7f7f7;
-      color: #111;
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f7f7f7; }
+    h1 { margin-bottom: 20px; }
+    .controls { display: flex; gap: 10px; margin-bottom: 24px; }
+    input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+    button { padding: 8px 16px; background: #25D366; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #1da851; }
+    #sessions { display: flex; flex-wrap: wrap; gap: 20px; }
+    .session-card {
+      background: #fff; border: 1px solid #ddd; border-radius: 12px;
+      padding: 20px; width: 280px; text-align: center;
     }
-    h1 {
-      margin-bottom: 16px;
-    }
-    #qr {
-      max-width: 320px;
-      width: 100%;
-      height: auto;
-      border: 1px solid #ccc;
-      padding: 12px;
-      background: #fff;
-    }
-    #status {
-      margin-top: 14px;
-      color: #555;
-    }
+    .session-card h3 { margin: 0 0 12px; }
+    .session-card img { width: 200px; height: 200px; }
+    .status { margin-top: 10px; font-size: 14px; color: #888; }
+    .status.connected { color: #25D366; font-weight: bold; }
+    .btn-delete { margin-top: 10px; background: #e74c3c; font-size: 12px; padding: 6px 12px; }
+    .btn-delete:hover { background: #c0392b; }
   </style>
 </head>
 <body>
-  <h1>Escanea el QR</h1>
-  <img id="qr" alt="QR de WhatsApp" />
-  <div id="status">Esperando QR...</div>
+  <h1>WhatsApp Multi-Sesión</h1>
 
- <script src="/socket.io/socket.io.js"></script>
-<script>
-const socket = io()
+  <div class="controls">
+    <input id="session-name" placeholder="Nombre de sesión (ej: empresa1)" />
+    <button onclick="createSession()">+ Nueva sesión</button>
+  </div>
 
-socket.on('qr', (img) => {
-  document.getElementById('qr').src = img
-})
+  <div id="sessions"></div>
 
-socket.on('status', (s) => {
-  document.getElementById('status').innerText = s
-})
-</script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io()
+
+    // Carga sesiones existentes al abrir la página
+    fetch('/sessions')
+      .then(r => r.json())
+      .then(list => list.forEach(s => addSessionCard(s.id, s.connected)))
+
+    function createSession() {
+      const id = document.getElementById('session-name').value.trim()
+      if (!id) return alert('Escribe un nombre de sesión')
+      fetch('/session/new', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: id })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) return alert(data.error)
+        addSessionCard(id, false)
+        document.getElementById('session-name').value = ''
+      })
+    }
+
+    function addSessionCard(id, connected) {
+      if (document.getElementById(`card-${id}`)) return
+
+      const card = document.createElement('div')
+      card.className = 'session-card'
+      card.id = `card-${id}`
+      card.innerHTML = `
+        <h3>${id}</h3>
+        <img id="qr-${id}" src="" alt="QR" style="display:${connected ? 'none' : 'block'}"/>
+        <div id="connected-${id}" style="display:${connected ? 'block' : 'none'}; font-size:48px">✅</div>
+        <div class="status ${connected ? 'connected' : ''}" id="status-${id}">
+          ${connected ? 'Conectado' : 'Esperando QR...'}
+        </div>
+        <button class="btn-delete" onclick="deleteSession('${id}')">🗑 Eliminar</button>
+      `
+      document.getElementById('sessions').appendChild(card)
+
+      // Escucha QR y estado de esta sesión
+      socket.on(`qr:${id}`, (img) => {
+        document.getElementById(`qr-${id}`).src = img
+        document.getElementById(`qr-${id}`).style.display = 'block'
+        document.getElementById(`connected-${id}`).style.display = 'none'
+        document.getElementById(`status-${id}`).textContent = 'Escanea el QR'
+        document.getElementById(`status-${id}`).className = 'status'
+      })
+
+      socket.on(`status:${id}`, (s) => {
+        if (s === 'connected') {
+          document.getElementById(`qr-${id}`).style.display = 'none'
+          document.getElementById(`connected-${id}`).style.display = 'block'
+          document.getElementById(`status-${id}`).textContent = 'Conectado'
+          document.getElementById(`status-${id}`).className = 'status connected'
+        } else {
+          document.getElementById(`qr-${id}`).style.display = 'block'
+          document.getElementById(`connected-${id}`).style.display = 'none'
+          document.getElementById(`status-${id}`).textContent = 'Reconectando...'
+          document.getElementById(`status-${id}`).className = 'status'
+        }
+      })
+    }
+
+    function deleteSession(id) {
+      if (!confirm(`¿Eliminar sesión "${id}"?`)) return
+      fetch(`/session/${id}`, { method: 'DELETE' })
+        .then(() => document.getElementById(`card-${id}`).remove())
+    }
+  </script>
 </body>
 </html>
-
