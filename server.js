@@ -86,11 +86,25 @@ const startSession = async (sessionId) => {
     }
   })
 
-  sock.ev.on('messages.upsert', async ({ messages }) => {
-    const msg = messages[0]
-    if (!msg?.message || msg.key.fromMe) return
-    await handleWelcomeFlow(sock, msg)
-  })
+sock.ev.on("messages.upsert", async ({ messages }) => {
+  const msg = messages[0];
+
+  if (!msg.message) return;
+
+  const body =
+    msg.message.conversation ||
+    msg.message.extendedTextMessage?.text;
+
+  const reply = await sendToLaravel({
+    from: msg.key.remoteJid,
+    body: body,
+    pushName: msg.pushName
+  });
+
+  await sock.sendMessage(msg.key.remoteJid, {
+    text: reply
+  });
+});
 
   sock.ev.on('creds.update', saveCreds)
 }
