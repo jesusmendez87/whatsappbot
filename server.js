@@ -4,7 +4,8 @@ import express from 'express'
 import { Server } from 'socket.io'
 import http from 'http'
 import makeWASocket, { fetchLatestBaileysVersion } from '@whiskeysockets/baileys'
-import { handleWelcomeFlow } from './bot/flows.js'
+
+import { sendToLaravel } from './bot/bot.js'
 import pino from 'pino'
 import fs from 'fs'
 
@@ -85,7 +86,6 @@ const startSession = async (sessionId) => {
       setTimeout(() => startSession(sessionId), delay)
     }
   })
-
 sock.ev.on("messages.upsert", async ({ messages }) => {
   const msg = messages[0];
 

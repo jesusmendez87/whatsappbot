@@ -1,41 +1,123 @@
-# 📱 WhatsApp Bot
+# 📱 WhatsApp Bot Automation
 
-> 🚀 Automatiza conversaciones en WhatsApp y convierte chats en oportunidades reales.
-
-Bot de WhatsApp desarrollado con Node.js que permite automatizar conversaciones, crear flujos personalizados y construir integraciones para distintos casos de uso (negocios, soporte, leads, etc.).
+Bot de WhatsApp desarrollado con Node.js que permite automatizar conversaciones, crear flujos inteligentes y construir soluciones listas para negocio (reservas, atención al cliente, captación de leads, etc.).
 
 ---
 
-## 💼 ¿Quieres automatizar tu WhatsApp?
+## 🚀 ¿Qué puedes hacer con este bot?
 
-Crea bots personalizados para tu negocio en minutos.  
-👉 Contáctame o abre un issue para más información.
-
----
-
-## 🚀 Características
-
-- 🤖 Respuestas automáticas en WhatsApp  
-- 🔄 Sistema de flujos conversacionales  
-- 📲 Autenticación mediante QR  
-- 🧩 Arquitectura modular y escalable  
-- 🔌 Preparado para integraciones externas  
-- 💬 Gestión de múltiples conversaciones  
+* 🤖 Responder automáticamente a clientes en WhatsApp
+* 🔄 Crear flujos conversacionales (tipo chatbot)
+* 📅 Gestionar reservas o citas
+* 🧲 Captar leads de forma automática
+* 🧩 Integrar lógica personalizada según el negocio
 
 ---
 
-## 🛠️ Tecnologías
+## 🎯 Casos de uso reales
 
-- Node.js  
-- JavaScript / TypeScript  
-- Baileys (WhatsApp Web API)  
+Este bot está pensado para ser utilizado en negocios como:
+
+* 💈 Peluquerías → gestión de citas
+* 🍔 Restaurantes → pedidos o reservas
+* 🏋️ Gimnasios → inscripción y atención
+* 🏥 Clínicas → confirmación de citas
+* 🛒 Negocios locales → atención automática
 
 ---
 
-## 📦 Instalación
+## ⚙️ Características principales
 
-Clona el repositorio:
+* 📲 Autenticación mediante QR (WhatsApp Web)
+* 🧠 Sistema de flujos conversacionales
+* 🧩 Arquitectura modular y escalable
+* 🔌 Preparado para integraciones (APIs, CRM, etc.)
+* 💬 Manejo de múltiples conversaciones
+* ⚡ Basado en Baileys (rápido y flexible)
+
+---
+
+## 🧱 Estructura del proyecto
+
+```
+bot/
+├── bot.js          # Punto de entrada
+├── flows/          # Flujos conversacionales
+├── services/       # Lógica de negocio
+├── utils/          # Helpers y utilidades
+```
+
+---
+
+## 🛠️ Instalación
 
 ```bash
 git clone https://github.com/jesusmendez87/whatsappbot.git
 cd whatsappbot
+npm install
+```
+
+---
+
+## ▶️ Uso
+
+```bash
+node bot.js
+```
+
+1. Escanea el QR desde tu WhatsApp
+2. ¡Listo! El bot comenzará a funcionar
+
+---
+
+## 🔄 Ejemplo de flujo
+
+```js
+module.exports = {
+  keyword: "hola",
+  handler: async (ctx) => {
+    return "¡Hola! ¿En qué puedo ayudarte?";
+  }
+};
+```
+
+---
+
+## 🧠 Próximas mejoras
+
+* [ ] Sistema de estado por usuario
+* [ ] Base de datos (SQLite / MongoDB)
+* [ ] Panel de administración
+* [ ] Integración con IA
+* [ ] Multi-sesión (varios números)
+* [ ] API REST
+
+---
+
+## 💡 Visión del proyecto
+
+Este proyecto no es solo un bot, es la base para construir:
+
+👉 Sistemas de automatización para negocios
+👉 SaaS de bots de WhatsApp
+👉 Herramientas de atención al cliente
+
+---
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Puedes abrir un issue o pull request.
+
+---
+
+## 📄 Licencia
+
+MIT
+
+---
+
+## 📩 Contacto
+
+Si quieres usar este bot para tu negocio o colaborar:
+
+👉 Abre un issue o contáctame directamente
