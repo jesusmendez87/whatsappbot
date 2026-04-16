@@ -18,4 +18,4 @@ RUN composer install --no-dev --no-interaction --ignore-platform-reqs
 
 RUN chmod -R 775 storage bootstrap/cache
 
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+CMD php artisan serve --host=0.0.0.0 --port=$PORT \   php artisan optimize:clear \ php p artisan route:list
