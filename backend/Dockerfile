@@ -3,7 +3,7 @@ FROM php:8.2-fpm
 # Dependencias del sistema
 RUN apt-get update && apt-get install -y \
     git curl zip unzip \
-    libpng-dev libonig-dev libxml2-dev
+    libpng-dev libonig-dev libxml2-dev 
 
 RUN pecl install mongodb \
     && docker-php-ext-enable mongodb    
