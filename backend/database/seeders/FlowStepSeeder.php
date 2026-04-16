@@ -9,7 +9,7 @@ class FlowStepSeeder extends Seeder
     public function run()
     {
         FlowStep::insert([
-            [
+            [ 
                 'flow_id' => 'horario',
                 'step' => 1,
                 'type' => 'message',
