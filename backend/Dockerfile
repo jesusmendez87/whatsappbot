@@ -13,7 +13,7 @@ WORKDIR /var/www
 # 👇 copiar primero SOLO composer files
 COPY composer.json composer.lock ./
 
-RUN composer install --no-interaction --prefer-dist --no-dev
+RUN composer install --no-dev --no-interaction --ignore-platform-reqs
 
 # luego copiar el resto
 COPY . .
