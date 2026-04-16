@@ -1,20 +1,23 @@
 <?php
 namespace App\Http\Controllers\Api;
-use Illuminate\Http\Request;
+
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Contact;
+use App\Services\Bot\FlowEngine;
 
-public function webhook(Request $request)
+class BotController extends Controller
 {
-    $engine = new \App\Services\Bot\FlowEngine();
+    public function webhook(Request $request, FlowEngine $engine)
+    {
+        $contact = Contact::firstOrCreate([
+            'phone' => $request->phone
+        ]);
 
-    $contact = Contact::firstOrCreate([
-        'phone' => $request->phone
-    ]);
+        $reply = $engine->handle($contact, $request->message);
 
-    $reply = $engine->handle($contact, $request->message);
-
-    return response()->json([
-        'reply' => $reply
-    ]);
+        return response()->json([
+            'reply' => $reply
+        ]);
+    }
 }
