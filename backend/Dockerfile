@@ -18,4 +18,7 @@ RUN composer install --no-dev --no-interaction --ignore-platform-reqs
 
 RUN chmod -R 775 storage bootstrap/cache
 
-CMD php artisan serve --host=0.0.0.0 --port=$PORT 
+RUN useradd -U -u 1000 appuser && chown -R 1000:1000 /var/www
+USER 1000
+
+CMD php artisan serve --host=0.0.0.0 --port=$PORT
